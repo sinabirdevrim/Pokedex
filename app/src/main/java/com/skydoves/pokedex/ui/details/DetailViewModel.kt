@@ -16,45 +16,44 @@
 
 package com.skydoves.pokedex.ui.details
 
-import androidx.databinding.ObservableBoolean
+import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
+import com.skydoves.bindables.bindingProperty
 import com.skydoves.pokedex.base.LiveCoroutinesViewModel
 import com.skydoves.pokedex.model.PokemonInfo
 import com.skydoves.pokedex.repository.DetailRepository
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import timber.log.Timber
 
 class DetailViewModel @AssistedInject constructor(
-  private val detailRepository: DetailRepository,
+  detailRepository: DetailRepository,
   @Assisted private val pokemonName: String
 ) : LiveCoroutinesViewModel() {
 
   val pokemonInfoLiveData: LiveData<PokemonInfo?>
 
-  private val _toastLiveData: MutableLiveData<String> = MutableLiveData()
-  val toastLiveData: LiveData<String> get() = _toastLiveData
+  @get:Bindable
+  var toastMessage: String? by bindingProperty(null)
+    private set
 
-  val isLoading: ObservableBoolean = ObservableBoolean(false)
+  @get:Bindable
+  var isLoading: Boolean by bindingProperty(true)
+    private set
 
   init {
     Timber.d("init DetailViewModel")
 
-    pokemonInfoLiveData = launchOnViewModelScope {
-      isLoading.set(true)
-      detailRepository.fetchPokemonInfo(
-        name = pokemonName,
-        onSuccess = { isLoading.set(false) },
-        onError = { _toastLiveData.postValue(it) }
-      ).asLiveData()
-    }
+    pokemonInfoLiveData = detailRepository.fetchPokemonInfo(
+      name = pokemonName,
+      onComplete = { isLoading = false },
+      onError = { toastMessage = it }
+    ).asLiveDataOnViewModelScope()
   }
 
-  @AssistedInject.Factory
+  @dagger.assisted.AssistedFactory
   interface AssistedFactory {
     fun create(pokemonName: String): DetailViewModel
   }

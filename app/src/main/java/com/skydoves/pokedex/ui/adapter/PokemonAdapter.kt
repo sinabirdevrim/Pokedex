@@ -17,11 +17,10 @@
 package com.skydoves.pokedex.ui.adapter
 
 import android.os.SystemClock
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
+import com.skydoves.bindables.binding
 import com.skydoves.pokedex.R
 import com.skydoves.pokedex.databinding.ItemPokemonBinding
 import com.skydoves.pokedex.model.Pokemon
@@ -33,12 +32,10 @@ class PokemonAdapter : RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() 
   private var onClickedAt = 0L
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
-    val inflater = LayoutInflater.from(parent.context)
-    val binding =
-      DataBindingUtil.inflate<ItemPokemonBinding>(inflater, R.layout.item_pokemon, parent, false)
+    val binding = parent.binding<ItemPokemonBinding>(R.layout.item_pokemon)
     return PokemonViewHolder(binding).apply {
       binding.root.setOnClickListener {
-        val position = adapterPosition.takeIf { it != NO_POSITION }
+        val position = bindingAdapterPosition.takeIf { it != NO_POSITION }
           ?: return@setOnClickListener
         val currentClickedAt = SystemClock.elapsedRealtime()
         if (currentClickedAt - onClickedAt > binding.transformationLayout.duration) {
@@ -49,10 +46,11 @@ class PokemonAdapter : RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() 
     }
   }
 
-  fun addPokemonList(pokemonList: List<Pokemon>) {
-    val previous = items.size
+  fun setPokemonList(pokemonList: List<Pokemon>) {
+    val previousItemSize = items.size
+    items.clear()
     items.addAll(pokemonList)
-    notifyItemRangeChanged(previous, pokemonList.size)
+    notifyItemRangeChanged(previousItemSize, pokemonList.size)
   }
 
   override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {

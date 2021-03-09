@@ -17,49 +17,54 @@
 package com.skydoves.pokedex.ui.main
 
 import androidx.annotation.MainThread
-import androidx.databinding.ObservableBoolean
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
+import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
+import com.skydoves.bindables.bindingProperty
 import com.skydoves.pokedex.base.LiveCoroutinesViewModel
 import com.skydoves.pokedex.model.Pokemon
 import com.skydoves.pokedex.repository.MainRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
+import javax.inject.Inject
 
-class MainViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MainViewModel @Inject constructor(
   private val mainRepository: MainRepository,
-  @Assisted private val savedStateHandle: SavedStateHandle
+  private val savedStateHandle: SavedStateHandle
 ) : LiveCoroutinesViewModel() {
 
-  private var pokemonFetchingLiveData: MutableLiveData<Int> = MutableLiveData(0)
+  private val pokemonFetchingIndex: MutableStateFlow<Int> = MutableStateFlow(0)
   val pokemonListLiveData: LiveData<List<Pokemon>>
 
-  private val _toastLiveData: MutableLiveData<String> = MutableLiveData()
-  val toastLiveData: LiveData<String> get() = _toastLiveData
+  @get:Bindable
+  var toastMessage: String? by bindingProperty(null)
+    private set
 
-  val isLoading: ObservableBoolean = ObservableBoolean(false)
+  @get:Bindable
+  var isLoading: Boolean by bindingProperty(false)
+    private set
 
   init {
     Timber.d("init MainViewModel")
 
-    pokemonListLiveData = pokemonFetchingLiveData.switchMap {
-      isLoading.set(true)
-      launchOnViewModelScope {
-        this.mainRepository.fetchPokemonList(
-          page = it,
-          onSuccess = { isLoading.set(false) },
-          onError = { _toastLiveData.postValue(it) }
-        ).asLiveData()
-      }
+    pokemonListLiveData = pokemonFetchingIndex.asLiveData().switchMap { page ->
+      mainRepository.fetchPokemonList(
+        page = page,
+        onStart = { isLoading = true },
+        onComplete = { isLoading = false },
+        onError = { toastMessage = it }
+      ).asLiveDataOnViewModelScope()
     }
   }
 
   @MainThread
-  fun fetchPokemonList(page: Int) {
-    pokemonFetchingLiveData.value = page
+  fun fetchNextPokemonList() {
+    if (!isLoading) {
+      pokemonFetchingIndex.value++
+    }
   }
 }

@@ -15,10 +15,11 @@
 // */
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
-apply from: '../dependencies.gradle'
+apply plugin: 'dagger.hilt.android.plugin'
+
+apply from: "$rootDir/dependencies.gradle"
 
 android {
     compileSdkVersion versions.compileSdk
@@ -49,10 +50,7 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
-        dataBinding = true
-    }
-    androidExtensions {
-        experimental = true
+        dataBinding true
     }
     lintOptions {
         abortOnError false
@@ -101,15 +99,16 @@ dependencies {
     kapt "androidx.room:room-compiler:$versions.roomVersion"
     testImplementation "androidx.arch.core:core-testing:$versions.archCompomentVersion"
 
+    // binding
+    implementation ("com.github.skydoves:bindables:$versions.bindablesVersion") {
+        exclude group: "com.google.android.material"
+    }
+
     // startup
     implementation "androidx.startup:startup-runtime:$versions.startupVersion"
 
     // hilt
     implementation "com.google.dagger:hilt-android:$versions.hiltCoreVersion"
-    implementation "androidx.hilt:hilt-common:$versions.hiltVersion"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$versions.hiltVersion"
-    compileOnly "com.squareup.inject:assisted-inject-annotations-dagger2:$versions.assistedInjectVersion"
-    kapt "com.squareup.inject:assisted-inject-processor-dagger2:$versions.assistedInjectVersion"
     kapt "com.google.dagger:hilt-compiler:$versions.hiltCoreVersion"
     kapt "androidx.hilt:hilt-compiler:$versions.hiltVersion"
     androidTestImplementation "com.google.dagger:hilt-android-testing:$versions.hiltCoreVersion"
@@ -131,19 +130,23 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutinesVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutinesVersion"
 
+    // whatIf
+    implementation "com.github.skydoves:whatif:$versions.whatIfVersion"
+
     // glide
     implementation "com.github.bumptech.glide:glide:$versions.glideVersion"
     implementation "com.github.florent37:glidepalette:$versions.glidePaletteVersion"
     kapt "com.github.bumptech.glide:compiler:$versions.glideVersion"
 
+    // bundler
+    implementation "com.github.skydoves:bundler:$versions.bundlerVersion"
+
     // transformation
     implementation "com.github.skydoves:transformationlayout:$versions.transformationLayout"
 
-    // adapter
+    // recyclerView
+    implementation "androidx.recyclerview:recyclerview:$versions.recyclerView"
     implementation "com.github.skydoves:baserecyclerviewadapter:$versions.baseAdapter"
-
-    // whatIf
-    implementation "com.github.skydoves:whatif:$versions.whatIfVersion"
 
     // gradation
     implementation "com.github.skydoves:rainbow:$versions.rainbowVersion"
@@ -168,4 +171,4 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espressoVersion"
 }
 
-apply from: '../spotless.gradle'
+apply from: "$rootDir/spotless.gradle"

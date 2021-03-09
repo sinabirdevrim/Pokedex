@@ -17,16 +17,15 @@
 package com.skydoves.pokedex.base
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.skydoves.bindables.BindingViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
-abstract class LiveCoroutinesViewModel : ViewModel() {
+abstract class LiveCoroutinesViewModel : BindingViewModel() {
 
-  inline fun <T> launchOnViewModelScope(crossinline block: suspend () -> LiveData<T>): LiveData<T> {
-    return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-      emitSource(block())
-    }
+  fun <T> Flow<T>.asLiveDataOnViewModelScope(): LiveData<T> {
+    return asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
   }
 }

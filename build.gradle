@@ -13,16 +13,15 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
-apply from: './versionsPlugin.gradle'
+apply from: "$rootDir/versionsPlugin.gradle"
 
 buildscript {
-    apply from: './dependencies.gradle'
+    apply from: "$rootDir/dependencies.gradle"
     repositories {
         google()
+        mavenCentral()
         jcenter()
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$versions.gradleBuildTool"
@@ -36,10 +35,9 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
 

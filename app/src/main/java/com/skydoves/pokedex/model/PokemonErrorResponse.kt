@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.skydoves.pokedex.extensions
+package com.skydoves.pokedex.model
 
-import android.view.View
-
-fun View.gone(shouldBeGone: Boolean) {
-  visibility = if (shouldBeGone) {
-    View.GONE
-  } else {
-    View.VISIBLE
-  }
-}
+/**
+ * A customized pokemon error response.
+ *
+ * @param code A network response code.
+ * @param message A network error message.
+ */
+data class PokemonErrorResponse(
+  val code: Int,
+  val message: String?
+)

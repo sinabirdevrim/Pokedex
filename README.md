@@ -35,6 +35,7 @@ Go to the [Releases](https://github.com/skydoves/Pokedex/releases) to download t
   - Room Persistence - construct a database using the abstract layer.
 - Architecture
   - MVVM Architecture (View - DataBinding - ViewModel - Model)
+  - [Bindables](https://github.com/skydoves/bindables) - Android DataBinding kit for notifying data changes to UI layers.
   - Repository pattern
 - [Retrofit2 & OkHttp3](https://github.com/square/retrofit) - construct the REST APIs and paging network data.
 - [Sandwich](https://github.com/skydoves/Sandwich) - construct lightweight http API response and handling error responses.
@@ -42,12 +43,17 @@ Go to the [Releases](https://github.com/skydoves/Pokedex/releases) to download t
 - [Glide](https://github.com/bumptech/glide), [GlidePalette](https://github.com/florent37/GlidePalette) - loading images.
 - [TransformationLayout](https://github.com/skydoves/transformationlayout) - implementing transformation motion animations.
 - [WhatIf](https://github.com/skydoves/whatif) - checking nullable object and empty collections more fluently.
+- [Bundler](https://github.com/skydoves/bundler) - Android Intent & Bundle extensions that insert and retrieve values elegantly.
 - [Timber](https://github.com/JakeWharton/timber) - logging.
 - [Material-Components](https://github.com/material-components/material-components-android) - Material design components like ripple animation, cardView.
 - Custom Views
   - [Rainbow](https://github.com/skydoves/rainbow) - An easy way to apply gradations and tinting for Android.
   - [AndroidRibbon](https://github.com/skydoves/androidribbon) - A simple way to implement a  beautiful ribbon with the shimmering on Android.
   - [ProgressView](https://github.com/skydoves/progressview) - A polished and flexible ProgressView, fully customizable with animations.
+
+## MAD Score
+![summary](https://user-images.githubusercontent.com/24237865/102366914-84f6b000-3ffc-11eb-8d49-b20694239782.png)
+![kotlin](https://user-images.githubusercontent.com/24237865/102366932-8a53fa80-3ffc-11eb-8131-fd6745a6f079.png)
 
 ## Architecture
 Pokedex is based on MVVM architecture and a repository pattern.
